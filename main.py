@@ -11,6 +11,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 black = (0, 0, 0)
 white = (255, 255, 255)
 blue = (0, 0, 255)
+red = (255, 0, 0)
 
 # Настройки сетки
 grid_size = 50
@@ -31,11 +32,17 @@ class Grid:
                 rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
                 pygame.draw.rect(screen, white, rect, 1)
 
-    def add_ship(self, x, y, ship):
+    def add_ship_from_coords(self, x, y, ship):
         grid_x = x // self.cell_size
         grid_y = y // self.cell_size
         if self.cells[grid_x][grid_y] is None:  # Проверяем, свободна ли ячейка
             self.cells[grid_x][grid_y] = ship
+
+    def add_ship_from_cell(self, cell_x, cell_y, ship):
+
+        if self.cells[cell_x][cell_y] is None:  # Проверяем, свободна ли ячейка
+            self.cells[cell_x][cell_y] = ship
+
 
 
 class Ship:
@@ -49,6 +56,13 @@ class Ship:
 # Создание сетки и корабля
 grid = Grid(grid_width, grid_height, grid_size)
 ship = Ship(blue)
+enemy_ship = Ship(red)
+
+
+grid.add_ship_from_cell(1, 1, ship)
+
+grid.add_ship_from_cell(2, 2, enemy_ship)
+
 
 # Основной цикл игры
 while True:
@@ -58,7 +72,7 @@ while True:
             sys.exit()
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouseX, mouseY = pygame.mouse.get_pos()
-            grid.add_ship(mouseX, mouseY, ship)
+            grid.add_ship_from_coords(mouseX, mouseY, ship)
 
     screen.fill(black)
     grid.draw(screen)
