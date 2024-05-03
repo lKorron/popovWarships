@@ -16,7 +16,7 @@ blue = (0, 0, 255)
 red = (255, 0, 0)
 
 # Настройки сетки
-grid_size = 50
+grid_size = 15
 grid_width = screen_width // grid_size
 grid_height = screen_height // grid_size
 
@@ -39,11 +39,57 @@ class Grid:
         grid_y = y // self.cell_size
         if self.cells[grid_x][grid_y] is None:  # Проверяем, свободна ли ячейка
             self.cells[grid_x][grid_y] = ship
+            ship.pos_x = grid_x
+            ship.pos_y = grid_y
 
     def add_ship_from_cell(self, cell_x, cell_y, ship):
-
         if self.cells[cell_x][cell_y] is None:  # Проверяем, свободна ли ячейка
             self.cells[cell_x][cell_y] = ship
+            ship.pos_x = cell_x
+            ship.pos_y = cell_y
+
+
+    def delete_ship(self, cell_x, cell_y):
+        self.cells[cell_x][cell_y] = None
+
+    def move_ship2position(self, ship, position):
+        cell_x, cell_y = position
+
+        if self.cells[cell_x][cell_y] is None:
+            ship_x = ship.pos_x
+            ship_y = ship.pos_y
+            self.delete_ship(ship_x, ship_y)
+            self.add_ship_from_cell(cell_x, cell_y, ship)
+
+
+    def move_ship(self, ship, direction):
+        if direction == "right":
+            if grid_width - 1 > ship.pos_x:
+                self.move_ship2position(ship, (ship.pos_x + 1, ship.pos_y))
+
+        elif direction == "left":
+            if 0 < ship.pos_x:
+                self.move_ship2position(ship, (ship.pos_x - 1, ship.pos_y))
+
+        elif direction == "up":
+            if 0 < ship.pos_y:
+                self.move_ship2position(ship, (ship.pos_x, ship.pos_y - 1))
+
+        elif direction == "down":
+            if grid_height - 1 > ship.pos_y:
+                self.move_ship2position(ship, (ship.pos_x, ship.pos_y + 1))
+
+    def move_ship_randomly(self, ship):
+        direction = random.randint(1, 4)
+        if direction == 1:
+            self.move_ship(ship, "right")
+        elif direction == 2:
+            self.move_ship(ship, "left")
+        elif direction == 3:
+            self.move_ship(ship, "up")
+        elif direction == 4:
+            self.move_ship(ship, "down")
+
 
 
     def spawn_ships(self, ship, ships_count=5):
@@ -77,9 +123,12 @@ class Grid:
 class Ship:
     def __init__(self, color):
         self.color = color
-
+        self.pos_x = None
+        self.pos_y = None
     def draw(self, x, y, screen, cell_size):
         pygame.draw.rect(screen, self.color, (x, y, cell_size, cell_size))
+
+
 
 class OurShip(Ship):
     def __init__(self, color=(0, 0, 255)):
@@ -99,21 +148,46 @@ grid = Grid(grid_width, grid_height, grid_size)
 
 ship = Ship(blue)
 
-our_ship = OurShip()
-enemy_ship = EnemyShip()
+
+enemy_ship1 = EnemyShip()
+enemy_ship2 = EnemyShip()
+
+grid.add_ship_from_cell(0, 0, enemy_ship1)
+grid.add_ship_from_cell(1, 0, enemy_ship2)
+
+our_ship1 = OurShip()
+our_ship2 = OurShip()
 
 
-grid.spawn_ships(our_ship, ships_count=6)
-grid.spawn_ships(enemy_ship, ships_count=6)
+grid.add_ship_from_cell(0, 30, our_ship1)
+grid.add_ship_from_cell(1, 30, our_ship2)
+
+
+
+
+
+
+
+# grid.spawn_ships(enemy_ship, ships_count=6)
 
 
 # grid.add_ship_from_cell(1, 1, ship)
 #
 # grid.add_ship_from_cell(2, 2, enemy_ship)
-
+clock = pygame.time.Clock()
+FPS = 10
 
 # Основной цикл игры
 while True:
+    clock.tick(FPS)
+    grid.move_ship_randomly(enemy_ship1)
+    grid.move_ship_randomly(enemy_ship2)
+
+    grid.move_ship_randomly(our_ship1)
+    grid.move_ship_randomly(our_ship2)
+
+
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
