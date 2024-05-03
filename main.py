@@ -1,3 +1,5 @@
+import random
+
 import pygame
 import sys
 
@@ -44,6 +46,33 @@ class Grid:
             self.cells[cell_x][cell_y] = ship
 
 
+    def spawn_ships(self, ship, ships_count=5):
+
+        height_lower = 0
+        height_upper = self.height - 1
+
+        if ship.ship_type == "our":
+            height_lower = self.height / 2
+            height_upper = self.height - 1
+
+        if ship.ship_type == "enemy":
+            height_lower = 0
+            height_upper = self.height / 2 - 1
+
+
+        coords = set()
+
+        while len(coords) < ships_count:
+            cell_x = random.randint(0, self.width - 1)
+            cell_y = random.randint(height_lower, height_upper)
+
+            if (cell_x, cell_y) not in coords:
+                coords.add((cell_x, cell_y))
+            self.add_ship_from_cell(cell_x, cell_y, ship)
+
+
+
+
 
 class Ship:
     def __init__(self, color):
@@ -52,16 +81,35 @@ class Ship:
     def draw(self, x, y, screen, cell_size):
         pygame.draw.rect(screen, self.color, (x, y, cell_size, cell_size))
 
+class OurShip(Ship):
+    def __init__(self, color=(0, 0, 255)):
+        super().__init__(color)
+        self.ship_type = "our"
+
+
+class EnemyShip(Ship):
+    def __init__(self, color=(255, 0, 0)):
+        super().__init__(color)
+        self.ship_type = "enemy"
+
 
 # Создание сетки и корабля
 grid = Grid(grid_width, grid_height, grid_size)
+
+
 ship = Ship(blue)
-enemy_ship = Ship(red)
+
+our_ship = OurShip()
+enemy_ship = EnemyShip()
 
 
-grid.add_ship_from_cell(1, 1, ship)
+grid.spawn_ships(our_ship, ships_count=6)
+grid.spawn_ships(enemy_ship, ships_count=6)
 
-grid.add_ship_from_cell(2, 2, enemy_ship)
+
+# grid.add_ship_from_cell(1, 1, ship)
+#
+# grid.add_ship_from_cell(2, 2, enemy_ship)
 
 
 # Основной цикл игры
