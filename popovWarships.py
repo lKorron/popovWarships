@@ -70,7 +70,15 @@ class Grid:
             self.move_ship2position(ship, (ship.pos_x, ship.pos_y + 1))
 
     def move_ship_randomly(self, ship):
-        directions = ship.get_available_directions(self)
+        directions = []
+        if ship.pos_x < grid_width - 1:
+            directions.append("right")
+        if ship.pos_x > 0:
+            directions.append("left")
+        if ship.pos_y > 0:
+            directions.append("up")
+        if ship.pos_y < grid_height - 1:
+            directions.append("down")
         if directions:
             direction = random.choice(directions)
             self.move_ship(ship, direction)
@@ -158,18 +166,6 @@ class Ship:
             strength += ship.health + ship.power
         return strength
 
-    def get_available_directions(self, grid):
-        directions = []
-        if self.pos_x < grid_width - 1 and not grid.cells[self.pos_x + 1][self.pos_y]:
-            directions.append("right")
-        if self.pos_x > 0 and not grid.cells[self.pos_x - 1][self.pos_y]:
-            directions.append("left")
-        if self.pos_y > 0 and not grid.cells[self.pos_x][self.pos_y - 1]:
-            directions.append("up")
-        if self.pos_y < grid_height - 1 and not grid.cells[self.pos_x][self.pos_y + 1]:
-            directions.append("down")
-        return directions
-
     def choose_direction_based_on_vision(self, grid):
         ships_in_range = grid.find_ships_in_vision_range(self)
         if not ships_in_range:
@@ -199,7 +195,7 @@ class Ship:
                 elif target.pos_y < self.pos_y:
                     target_counts["up"] += 1
 
-            return self.get_available_direction(grid, target_counts, retreat=False)
+            return self.get_available_direction(grid, target_counts)
         else:
             escape_counts = {"right": 0, "left": 0, "up": 0, "down": 0}
             for target in enemy_ships:
@@ -212,26 +208,27 @@ class Ship:
                 elif target.pos_y < self.pos_y:
                     escape_counts["down"] += 1
 
-            return self.get_available_direction(grid, escape_counts, retreat=True)
+            return self.get_available_direction(grid, escape_counts)
 
     def get_random_direction(self, grid):
-        directions = self.get_available_directions(grid)
+        directions = []
+        if self.pos_x < grid_width - 1:
+            directions.append("right")
+        if self.pos_x > 0:
+            directions.append("left")
+        if self.pos_y > 0:
+            directions.append("up")
+        if self.pos_y < grid_height - 1:
+            directions.append("down")
         if directions:
             return random.choice(directions)
         return None
 
-    def get_available_direction(self, grid, direction_counts, retreat):
+    def get_available_direction(self, grid, direction_counts):
         directions = [dir for dir, count in direction_counts.items() if count > 0]
         if not directions:
             return self.get_random_direction(grid)
-        if retreat:
-            return min(directions, key=lambda d: direction_counts[d])
         return max(directions, key=lambda d: direction_counts[d])
-
-    def should_move_towards(self, target):
-        distance_x = abs(self.pos_x - target.pos_x)
-        distance_y = abs(self.pos_y - target.pos_y)
-        return distance_x + distance_y > self.attack_range // 2
 
 class OurShip(Ship):
     def __init__(self, color=(0, 0, 255), speed=1, vision_range=7, attack_range=7, health=100, power=10, accuracy=0.7, attack_delay=30):
@@ -246,32 +243,19 @@ class EnemyShip(Ship):
 # Создание сетки и кораблей
 grid = Grid(grid_width, grid_height, grid_size)
 
-# enemy_ship1 = EnemyShip(speed=40, attack_delay=10)
-# enemy_ship2 = EnemyShip(speed=40, attack_delay=10)
-#
-# grid.add_ship_from_cell(0, 0, enemy_ship1)
-# grid.add_ship_from_cell(1, 0, enemy_ship2)
-#
-# our_ship1 = OurShip(speed=40, attack_delay=10)
-# our_ship2 = OurShip(speed=40, attack_delay=10)
-#
-# grid.add_ship_from_cell(0, 10, our_ship1)
-# grid.add_ship_from_cell(1, 10, our_ship2)
+enemy_ship1 = EnemyShip(speed=40, attack_delay=10)
+enemy_ship2 = EnemyShip(speed=40, attack_delay=10)
 
-def add_ship2game(ship, x, y, ships):
-    grid.add_ship_from_cell(x, y, ship)
-    ships.append(ship)
+grid.add_ship_from_cell(0, 0, enemy_ship1)
+grid.add_ship_from_cell(1, 0, enemy_ship2)
 
-ships = []
+our_ship1 = OurShip(speed=40, attack_delay=10)
+our_ship2 = OurShip(speed=40, attack_delay=10)
 
-add_ship2game(EnemyShip(speed=40, attack_delay=10), 10, 0, ships)
-add_ship2game(EnemyShip(speed=40, attack_delay=10), 1, 0, ships)
+grid.add_ship_from_cell(0, 10, our_ship1)
+grid.add_ship_from_cell(1, 10, our_ship2)
 
-
-
-add_ship2game(OurShip(speed=40, attack_delay=10), 0, 12, ships)
-add_ship2game(OurShip(speed=40, attack_delay=10), 10, 12, ships)
-add_ship2game(OurShip(speed=40, attack_delay=10), 11, 12, ships)
+ships = [enemy_ship1, enemy_ship2, our_ship1, our_ship2]
 
 clock = pygame.time.Clock()
 FPS = 10
@@ -290,17 +274,9 @@ while True:
 
         # Перемещение
         if ship.move_timer >= 60:
-            direction = None
-            ships_in_range = grid.find_ships_in_vision_range(ship)
-            if ships_in_range:
-                for target in ships_in_range:
-                    if target.ship_type != ship.ship_type and ship.should_move_towards(target):
-                        direction = ship.choose_direction_based_on_vision(grid)
-                        break
+            direction = ship.choose_direction_based_on_vision(grid)
             if direction:
                 grid.move_ship(ship, direction)
-            else:
-                grid.move_ship_randomly(ship)
             ship.move_timer = 0
 
         # Атака
