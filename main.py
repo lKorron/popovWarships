@@ -35,15 +35,15 @@ def add_ship2game(ship, x, y, ships):
 ships = []
 add_ship2game(EnemyShip(speed=40, attack_delay=10), 10, 0, ships)
 add_ship2game(EnemyShip(speed=40, attack_delay=10), 1, 0, ships)
-add_ship2game(EnemyShip(speed=40, attack_delay=10), 2, 0, ships)
-add_ship2game(EnemyShip(speed=40, attack_delay=10), 3, 0, ships)
 add_ship2game(EnemyShip(speed=40, attack_delay=10), 4, 0, ships)
-add_ship2game(EnemyShip(speed=40, attack_delay=10), 5, 0, ships)
+add_ship2game(EnemyShip(speed=40, attack_delay=10), 6, 0, ships)
+add_ship2game(EnemyShip(speed=40, attack_delay=10), 8, 0, ships)
+add_ship2game(EnemyShip(speed=40, attack_delay=10), 12, 0, ships)
 
 
 
 add_ship2game(OurShip(speed=40, attack_delay=10), 0, 12, ships)
-add_ship2game(OurShip(speed=40, attack_delay=10), 1, 12, ships)
+add_ship2game(OurShip(speed=40, attack_delay=10), 12, 12, ships)
 add_ship2game(OurShip(speed=40, attack_delay=10), 3, 12, ships)
 add_ship2game(OurShip(speed=40, attack_delay=10), 5, 12, ships)
 add_ship2game(OurShip(speed=40, attack_delay=10), 7, 12, ships)
