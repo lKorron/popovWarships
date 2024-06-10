@@ -6,9 +6,9 @@ config = {
     "action_threshold": 60,
     "vision_range": 5,
     "attack_range": 3,
-    "background_color": (0, 0, 0),
-    "grid_color": (255, 255, 255),
+    "background_color": (30, 30, 30),
+    "grid_color": (180, 180, 180),
     "flash_color": (255, 255, 0),
-    "our_ship_color": (0, 0, 255),
-    "enemy_ship_color": (255, 0, 0)
+    "our_ship_color": (0, 150, 255),
+    "enemy_ship_color": (0, 255, 100)
 }
