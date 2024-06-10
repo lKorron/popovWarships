@@ -71,6 +71,19 @@ class Grid:
     def rotate_ship_randomly(self, ship):
         ship.turn_left() if random.choice(["turn_left", "turn_right"]) == "turn_left" else ship.turn_right()
 
+    def rotate_ship2direction(self, ship, direction):
+        nearby_directions = {
+            "up": ["left", "right"],
+            "down": ["left", "right"],
+            "left": ["up", "down"],
+            "right": ["up", "down"]
+        }
+
+        if direction in nearby_directions[ship.direction]:
+            ship.direction = direction
+        else:
+            ship.direction = random.choice(nearby_directions[ship.direction])
+
     def spawn_ships(self, ship, ships_count=5):
         height_lower = 0
         height_upper = self.height - 1
