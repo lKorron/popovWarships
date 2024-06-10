@@ -5,7 +5,7 @@ from config import config
 class Ship:
     def __init__(self, color, speed=1, vision_range=3, attack_range=1, health=100, power=10, accuracy=0.7, attack_delay=30, flash_color=(255, 255, 0)):
         self.color = color
-        self.base_color = color  # Основной цвет корабля
+        self.base_color = color
         self.pos_x = None
         self.pos_y = None
         self.speed = speed
@@ -16,10 +16,10 @@ class Ship:
         self.accuracy = accuracy
         self.move_timer = 0
         self.attack_timer = 0
-        self.attack_delay = attack_delay  # Задержка между атаками
+        self.attack_delay = attack_delay
         self.flash_color = flash_color
         self.flash_timer = 0
-        self.flash_duration = 5  # Продолжительность мигания
+        self.flash_duration = 5
 
     def draw(self, x, y, screen, cell_size):
         pygame.draw.rect(screen, self.color, (x, y, cell_size, cell_size))
