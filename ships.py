@@ -3,9 +3,9 @@ import random
 from config import config
 
 class Ship:
-    def __init__(self, color, speed=1, vision_range=3, attack_range=1, health=100, power=10, accuracy=0.7, attack_delay=30, flash_color=(255, 255, 0)):
+    def __init__(self, color, speed=1, vision_range=3, attack_range=1, health=100, power=10, accuracy=0.7, attack_delay=30, direction="up"):
         self.color = color
-        self.base_color = color
+        self.base_color = color  # Основной цвет корабля
         self.pos_x = None
         self.pos_y = None
         self.speed = speed
@@ -16,13 +16,22 @@ class Ship:
         self.accuracy = accuracy
         self.move_timer = 0
         self.attack_timer = 0
-        self.attack_delay = attack_delay
-        self.flash_color = flash_color
+        self.attack_delay = attack_delay  # Задержка между атаками
         self.flash_timer = 0
-        self.flash_duration = 5
+        self.flash_duration = 5  # Продолжительность мигания
+        self.direction = direction  # Направление корабля по умолчанию
 
     def draw(self, x, y, screen, cell_size):
-        pygame.draw.rect(screen, self.color, (x, y, cell_size, cell_size))
+        half_size = cell_size // 2
+        if self.direction == "up":
+            points = [(x + half_size, y), (x, y + cell_size), (x + cell_size, y + cell_size)]
+        elif self.direction == "down":
+            points = [(x + half_size, y + cell_size), (x, y), (x + cell_size, y)]
+        elif self.direction == "left":
+            points = [(x, y + half_size), (x + cell_size, y), (x + cell_size, y + cell_size)]
+        else:  # right
+            points = [(x + cell_size, y + half_size), (x, y), (x, y + cell_size)]
+        pygame.draw.polygon(screen, self.color, points)
 
     def attack(self, target):
         if random.random() <= self.accuracy:
@@ -36,7 +45,7 @@ class Ship:
     def update(self):
         if self.flash_timer > 0:
             self.flash_timer -= 1
-            self.color = self.flash_color if self.flash_timer % 2 == 0 else self.base_color
+            self.color = config["flash_color"] if self.flash_timer % 2 == 0 else self.base_color
         else:
             self.color = self.base_color
 
@@ -45,6 +54,14 @@ class Ship:
         for ship in ships:
             strength += ship.health + ship.power
         return strength
+
+    def turn_left(self):
+        directions = ["up", "left", "down", "right"]
+        self.direction = directions[(directions.index(self.direction) + 1) % 4]
+
+    def turn_right(self):
+        directions = ["up", "right", "down", "left"]
+        self.direction = directions[(directions.index(self.direction) + 1) % 4]
 
     def get_available_directions(self, grid):
         directions = []
@@ -120,7 +137,6 @@ class Ship:
         distance_x = abs(self.pos_x - target.pos_x)
         distance_y = abs(self.pos_y - target.pos_y)
         return distance_x + distance_y > self.attack_range // 2
-
 
 our_ship_color = config["our_ship_color"]
 enemy_ship_color = config["enemy_ship_color"]

@@ -75,7 +75,7 @@ while True:
                         direction = ship.choose_direction_based_on_vision(grid)
                         break
             if direction:
-                grid.move_ship(ship, direction)
+                grid.move_ship(ship)
             else:
                 grid.move_ship_randomly(ship)
             ship.move_timer = 0

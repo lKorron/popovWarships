@@ -41,7 +41,8 @@ class Grid:
             self.delete_ship(ship_x, ship_y)
             self.add_ship_from_cell(cell_x, cell_y, ship)
 
-    def move_ship(self, ship, direction):
+    def move_ship(self, ship):
+        direction = ship.direction
         if direction == "right" and self.width - 1 > ship.pos_x:
             self.move_ship2position(ship, (ship.pos_x + 1, ship.pos_y))
         elif direction == "left" and 0 < ship.pos_x:
@@ -52,10 +53,23 @@ class Grid:
             self.move_ship2position(ship, (ship.pos_x, ship.pos_y + 1))
 
     def move_ship_randomly(self, ship):
-        directions = ship.get_available_directions(self)
-        if directions:
-            direction = random.choice(directions)
-            self.move_ship(ship, direction)
+
+
+        available_directions = ship.get_available_directions(self)
+
+        if ship.direction in available_directions:
+            actions = ["rotate", "forward"]
+            if random.choice(actions) == "rotate":
+                self.rotate_ship_randomly(ship)
+            else:
+                self.move_ship(ship)
+
+        else:
+            self.rotate_ship_randomly(ship)
+
+
+    def rotate_ship_randomly(self, ship):
+        ship.turn_left() if random.choice(["turn_left", "turn_right"]) == "turn_left" else ship.turn_right()
 
     def spawn_ships(self, ship, ships_count=5):
         height_lower = 0
