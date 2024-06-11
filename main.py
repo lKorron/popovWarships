@@ -2,7 +2,7 @@ import random
 import pygame
 import sys
 from grid import Grid
-from ships import OurShip, EnemyShip
+from ships import OurShip, EnemyShip, Destroyer, LightCruiser, HeavyCruiser, BattleCruiser, Battleship, AircraftCarrier
 from config import config
 
 
@@ -33,21 +33,67 @@ def add_ship2game(ship, x, y, ships):
     ships.append(ship)
 
 ships = []
-add_ship2game(EnemyShip(speed=40, attack_delay=10), 10, 0, ships)
-add_ship2game(EnemyShip(speed=40, attack_delay=10), 1, 0, ships)
-add_ship2game(EnemyShip(speed=40, attack_delay=10), 4, 0, ships)
-add_ship2game(EnemyShip(speed=40, attack_delay=10), 6, 0, ships)
-add_ship2game(EnemyShip(speed=40, attack_delay=10), 8, 0, ships)
-add_ship2game(EnemyShip(speed=40, attack_delay=10), 12, 0, ships)
+def buy_ships(player, budget):
+    ship_classes = {
+        '1': (Destroyer, 10),
+        '2': (LightCruiser, 15),
+        '3': (HeavyCruiser, 20),
+        '4': (BattleCruiser, 30),
+        '5': (Battleship, 40),
+        '6': (AircraftCarrier, 50)
+    }
+
+    while budget > 0:
+        print(f"Player {player}, you have {budget} coins.")
+        print("1. Destroyer (10)")
+        print("2. Light Cruiser (15)")
+        print("3. Heavy Cruiser (20)")
+        print("4. Battle Cruiser (30)")
+        print("5. Battleship (40)")
+        print("6. Aircraft Carrier (50)")
+        choice = input("Choose a ship to buy (1-6): ")
+
+        if choice in ship_classes:
+            ship_class, cost = ship_classes[choice]
+            if budget >= cost:
+                budget -= cost
+                ship = ship_class("our" if player == 1 else "enemy")
+                ships.append(ship)
+            else:
+                print("Not enough coins.")
+        else:
+            print("Invalid choice.")
+
+        if budget < min(ship_classes.values(), key=lambda x: x[1])[1]:
+            break
+
+    return budget
 
 
+# Покупка кораблей игроками
+player1_budget = 100
+player2_budget = 100
+print("Player 1, buy your ships:")
+player1_budget = buy_ships(1, player1_budget)
+print("Player 2, buy your ships:")
+player2_budget = buy_ships(2, player2_budget)
 
-add_ship2game(OurShip(speed=40, attack_delay=10), 0, 12, ships)
-add_ship2game(OurShip(speed=40, attack_delay=10), 12, 12, ships)
-add_ship2game(OurShip(speed=40, attack_delay=10), 3, 12, ships)
-add_ship2game(OurShip(speed=40, attack_delay=10), 5, 12, ships)
-add_ship2game(OurShip(speed=40, attack_delay=10), 7, 12, ships)
-add_ship2game(OurShip(speed=40, attack_delay=10), 10, 12, ships)
+
+# Расстановка кораблей на поле
+def place_ships(player_ships, start_y, end_y):
+    for ship in player_ships:
+        while True:
+            x = random.randint(0, grid_width - 1)
+            y = random.randint(start_y, end_y)
+            if grid.cells[x][y] is None:
+                grid.add_ship_from_cell(x, y, ship)
+                break
+
+
+our_ships = [ship for ship in ships if ship.ship_type == "our"]
+enemy_ships = [ship for ship in ships if ship.ship_type == "enemy"]
+place_ships(our_ships, grid_height // 2, grid_height - 1)
+place_ships(enemy_ships, 0, grid_height // 2 - 1)
 
 clock = pygame.time.Clock()
 FPS = config["FPS"]

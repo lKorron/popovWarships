@@ -1,6 +1,6 @@
 import pygame
 import random
-
+import math
 class Grid:
     def __init__(self, width, height, cell_size, grid_color=(255, 255, 255)):
         self.width = width
@@ -109,17 +109,23 @@ class Grid:
     def find_targets_in_range(self, ship):
         targets = []
         for x in range(max(0, ship.pos_x - ship.attack_range), min(self.width, ship.pos_x + ship.attack_range + 1)):
-            for y in range(max(0, ship.pos_y - ship.attack_range), min(self.height, ship.pos_y + ship.attack_range + 1)):
-                target = self.cells[x][y]
-                if target and target.ship_type != ship.ship_type:
-                    targets.append(target)
+            for y in range(max(0, ship.pos_y - ship.attack_range),
+                           min(self.height, ship.pos_y + ship.attack_range + 1)):
+                distance = math.sqrt((x - ship.pos_x) ** 2 + (y - ship.pos_y) ** 2)
+                if distance <= ship.attack_range:
+                    target = self.cells[x][y]
+                    if target and target.ship_type != ship.ship_type:
+                        targets.append(target)
         return targets
 
     def find_ships_in_vision_range(self, ship):
         ships_in_range = []
         for x in range(max(0, ship.pos_x - ship.vision_range), min(self.width, ship.pos_x + ship.vision_range + 1)):
-            for y in range(max(0, ship.pos_y - ship.vision_range), min(self.height, ship.pos_y + ship.vision_range + 1)):
-                target = self.cells[x][y]
-                if target and target != ship:
-                    ships_in_range.append(target)
+            for y in range(max(0, ship.pos_y - ship.vision_range),
+                           min(self.height, ship.pos_y + ship.vision_range + 1)):
+                distance = math.sqrt((x - ship.pos_x) ** 2 + (y - ship.pos_y) ** 2)
+                if distance <= ship.vision_range:
+                    target = self.cells[x][y]
+                    if target and target != ship:
+                        ships_in_range.append(target)
         return ships_in_range
