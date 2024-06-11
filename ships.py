@@ -158,10 +158,10 @@ class EnemyShip(Ship):
 class Destroyer(OurShip, EnemyShip):
     def __init__(self, ship_type):
         if ship_type == "our":
-            OurShip.__init__(self, color=(0, 0, 255), speed=50, vision_range=4, attack_range=3, health=80, power=10,
+            OurShip.__init__(self, color=our_ship_color, speed=50, vision_range=4, attack_range=3, health=80, power=10,
                              accuracy=0.7)
         else:
-            EnemyShip.__init__(self, color=(255, 0, 0), speed=50, vision_range=4, attack_range=3, health=80,
+            EnemyShip.__init__(self, color=enemy_ship_color, speed=50, vision_range=4, attack_range=3, health=80,
                                power=10, accuracy=0.75)
         self.ship_type = ship_type
 
@@ -169,10 +169,10 @@ class Destroyer(OurShip, EnemyShip):
 class LightCruiser(OurShip, EnemyShip):
     def __init__(self, ship_type):
         if ship_type == "our":
-            OurShip.__init__(self, color=(0, 0, 255), speed=40, vision_range=5, attack_range=4, health=120, power=15,
+            OurShip.__init__(self, color=our_ship_color, speed=40, vision_range=5, attack_range=4, health=120, power=15,
                              accuracy=0.75)
         else:
-            EnemyShip.__init__(self, color=(255, 0, 0), speed=40, vision_range=5, attack_range=4, health=120, power=15,
+            EnemyShip.__init__(self, color=enemy_ship_color, speed=40, vision_range=5, attack_range=4, health=120, power=15,
                                accuracy=0.75)
         self.ship_type = ship_type
 
@@ -180,10 +180,10 @@ class LightCruiser(OurShip, EnemyShip):
 class HeavyCruiser(OurShip, EnemyShip):
     def __init__(self, ship_type):
         if ship_type == "our":
-            OurShip.__init__(self, color=(0, 0, 255), speed=35, vision_range=5, attack_range=4, health=150, power=20,
+            OurShip.__init__(self, color=our_ship_color, speed=35, vision_range=5, attack_range=4, health=150, power=20,
                              accuracy=0.75)
         else:
-            EnemyShip.__init__(self, color=(255, 0, 0), speed=35, vision_range=5, attack_range=4, health=150, power=20,
+            EnemyShip.__init__(self, color=enemy_ship_color, speed=35, vision_range=5, attack_range=4, health=150, power=20,
                                accuracy=0.75)
         self.ship_type = ship_type
 
@@ -191,10 +191,10 @@ class HeavyCruiser(OurShip, EnemyShip):
 class BattleCruiser(OurShip, EnemyShip):
     def __init__(self, ship_type):
         if ship_type == "our":
-            OurShip.__init__(self, color=(0, 0, 255), speed=30, vision_range=6, attack_range=5, health=150, power=25,
+            OurShip.__init__(self, color=our_ship_color, speed=30, vision_range=6, attack_range=5, health=150, power=25,
                              accuracy=0.8)
         else:
-            EnemyShip.__init__(self, color=(255, 0, 0), speed=30, vision_range=6, attack_range=5, health=150, power=25,
+            EnemyShip.__init__(self, color=enemy_ship_color, speed=30, vision_range=6, attack_range=5, health=150, power=25,
                                accuracy=0.8)
         self.ship_type = ship_type
 
@@ -202,10 +202,10 @@ class BattleCruiser(OurShip, EnemyShip):
 class Battleship(OurShip, EnemyShip):
     def __init__(self, ship_type):
         if ship_type == "our":
-            OurShip.__init__(self, color=(0, 0, 255), speed=20, vision_range=7, attack_range=6, health=200, power=30,
+            OurShip.__init__(self, color=our_ship_color, speed=20, vision_range=7, attack_range=6, health=200, power=30,
                              accuracy=0.8)
         else:
-            EnemyShip.__init__(self, color=(255, 0, 0), speed=20, vision_range=7, attack_range=6, health=200, power=30,
+            EnemyShip.__init__(self, color=enemy_ship_color, speed=20, vision_range=7, attack_range=6, health=200, power=30,
                                accuracy=0.8)
         self.ship_type = ship_type
 
@@ -213,9 +213,9 @@ class Battleship(OurShip, EnemyShip):
 class AircraftCarrier(OurShip, EnemyShip):
     def __init__(self, ship_type):
         if ship_type == "our":
-            OurShip.__init__(self, color=(0, 0, 255), speed=10, vision_range=8, attack_range=7, health=200, power=35,
+            OurShip.__init__(self, color=our_ship_color, speed=10, vision_range=8, attack_range=7, health=200, power=35,
                              accuracy=0.8)
         else:
-            EnemyShip.__init__(self, color=(255, 0, 0), speed=10, vision_range=8, attack_range=7, health=200,
+            EnemyShip.__init__(self, color=enemy_ship_color, speed=10, vision_range=8, attack_range=7, health=200,
                                power=35, accuracy=0.8)
         self.ship_type = ship_type
